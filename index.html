@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="lang-en">
+<html lang="it" class="lang-it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,18 +35,22 @@
             position:fixed;
             inset:0;
             overflow:auto;
+            background:var(--bg-dark);
             transition:opacity 0.7s cubic-bezier(0.4,0,0.2,1),
                         transform 0.7s cubic-bezier(0.4,0,0.2,1);
+            z-index:1;
         }
         .view.hidden {
             opacity:0;
             pointer-events:none;
             transform:scale(1.03);
+            z-index:0;
         }
         .view.active {
             opacity:1;
             pointer-events:all;
             transform:scale(1);
+            z-index:2;
         }
 
         /* ═══════════════════════════════════════
@@ -438,21 +442,22 @@
             padding:0 20px 40px;
         }
         #view-fotografia .showcase-card {
-            flex:1 1 320px;
+            flex:1 1 360px;
             display:flex;
             flex-direction:column;
             align-items:center;
             gap:24px;
-            max-width:420px;
+            max-width:520px;
+            min-width:320px;
             width:100%;
         }
         #view-fotografia .media-viewport {
             width:100%;
-            aspect-ratio:4/3;
+            aspect-ratio:5/4;
             background:#000;
-            border-radius:16px;
+            border-radius:18px;
             overflow:hidden;
-            box-shadow:0 20px 45px rgba(0,0,0,0.4);
+            box-shadow:0 24px 55px rgba(0,0,0,0.45);
             transition:transform 0.4s cubic-bezier(0.16,1,0.3,1),box-shadow 0.4s ease;
         }
         #view-fotografia .media-viewport img {
@@ -472,8 +477,11 @@
         }
         #view-fotografia .glass-capsule {
             width:100%;
-            max-width:420px;
-            padding:18px 0;
+            max-width:520px;
+            padding:24px 0;
+        }
+        #view-fotografia .glass-capsule.link-btn h1 {
+            font-size:2.4rem;
         }
         #view-fotografia .img-btn {
             display:block;
@@ -492,6 +500,41 @@
             height:100%;
             object-fit:cover;
             border-radius:16px;
+        }
+
+        /* Top navigation across all pages */
+        #top-nav {
+            position:fixed;
+            top:18px;
+            right:18px;
+            z-index:20;
+            display:flex;
+            gap:12px;
+            background:rgba(6,6,10,0.65);
+            border:1px solid rgba(255,255,255,0.12);
+            backdrop-filter:blur(18px);
+            -webkit-backdrop-filter:blur(18px);
+            border-radius:999px;
+            padding:10px 14px;
+            box-shadow:0 18px 50px rgba(0,0,0,0.35);
+        }
+        .top-nav-link {
+            all:unset;
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            padding:0.7em 1em;
+            border-radius:999px;
+            font-size:0.92rem;
+            color:rgba(255,255,255,0.85);
+            cursor:pointer;
+            transition:background var(--transition), color var(--transition), transform var(--transition);
+        }
+        .top-nav-link:hover,
+        .top-nav-link:focus-visible {
+            background:rgba(255,255,255,0.08);
+            color:#fff;
+            transform:translateY(-1px);
         }
 
         /* Clickable image button inside video tiles */
@@ -513,6 +556,33 @@
             border-radius:8px;
         }
 
+        .showcase-card.asl .media-viewport,
+        .showcase-card.ecc .media-viewport {
+            position:relative;
+            aspect-ratio:1/1;
+            border-radius:22px;
+            overflow:hidden;
+            box-shadow:0 18px 45px rgba(0,0,0,0.35);
+        }
+        .showcase-card.asl .media-viewport img,
+        .showcase-card.ecc .media-viewport img {
+            width:100%;
+            height:100%;
+            object-fit:cover;
+            border-radius:22px;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+        }
+        .showcase-card.asl .media-viewport::after,
+        .showcase-card.ecc .media-viewport::after {
+            content:'';
+            position:absolute;
+            inset:0;
+            pointer-events:none;
+            background:radial-gradient(circle at 50% 20%, rgba(255,255,255,0.18), transparent 38%),
+                        radial-gradient(circle at 50% 80%, rgba(255,255,255,0.08), transparent 45%);
+            mix-blend-mode:soft-light;
+        }
+
         /* Video list pages */
         .video-list {
             width:100%;
@@ -521,6 +591,7 @@
             flex-direction:column;
             gap:22px;
             padding:40px 20px;
+            margin:0 auto;
             align-items:center;
         }
         .video-item {
@@ -586,68 +657,147 @@
         ═══════════════════════════════════════ */
         #view-analogico,
         #view-digitale { background:#050507; }
+        #view-analogico .category-header-wrap,
+        #view-digitale .category-header-wrap { display:none; }
 
         .strip-viewport {
-            position:absolute; top:0; left:0;
-            width:100%; height:100%;
-            overflow:hidden; cursor:grab;
+            position:absolute;
+            inset:0;
+            padding:0;
+            display:block;
+            overflow:auto;
+            background:#050507;
         }
-        .strip-track {
-            position:absolute; top:0; left:0;
-            height:100%; will-change:transform;
+        :root { --tile-size: 400px; }
+        @media (min-width:2000px) { :root { --tile-size: 800px; } }
+        .gallery-grid {
+            display:grid;
+            grid-template-columns: repeat(auto-fill, var(--tile-size));
+            grid-auto-rows: var(--tile-size);
+            gap: 0;
+            width:100%;
+            justify-content:start;
+        }
+        .gallery-grid .gallery-tile {
+            position:relative;
+            overflow:hidden;
+            display:block;
+        }
+        .gallery-grid .gallery-tile img {
+            width:100%;
+            height:100%;
+            object-fit:cover;
+            display:block;
+            -webkit-user-drag: none;
+            opacity:0;
+            transform:scale(1.02) translateY(8px);
+            animation:tileFadeIn 0.7s ease-out forwards;
+        }
+        @keyframes tileFadeIn {
+            from { opacity:0; transform:scale(1.02) translateY(8px); }
+            to   { opacity:1; transform:scale(1) translateY(0); }
         }
         .film-frame {
-            position:absolute; top:0; height:100%; width:200px;
-            background:#000; border-radius:12px; overflow:hidden;
-            border:1px solid rgba(100,150,255,0.08);
+            position:relative;
+            width:var(--tile-size);
+            height:var(--tile-size);
+            border-radius:0;
+            overflow:hidden;
+            border:0;
+            background:transparent;
             cursor:pointer;
-            transition:all 0.2s ease-out;
-            transform:scale(1); z-index:1;
+            transition:transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+            box-shadow:none;
+            display:block;
         }
-        .film-frame:hover {
-            transform:scale(1.15); z-index:10;
-            border-color:rgba(100,150,255,0.25);
-            box-shadow:0 12px 30px rgba(0,0,0,0.7);
+        .film-frame:hover,
+        .film-frame.active {
+            transform:translateY(-2px);
+            box-shadow:0 10px 20px rgba(0,0,0,0.12);
         }
-        .frame-backdrop {
-            position:absolute; top:-10%; left:-10%;
-            width:120%; height:120%; object-fit:cover;
-            filter:blur(40px) brightness(0.25) saturate(1.2);
-            z-index:1; opacity:0.5; transition:opacity 0.2s; pointer-events:none;
+        .film-frame img { width:100%; height:100%; object-fit:cover; display:block; }
+        .film-frame.culled {
+            display:none;
         }
-        .film-frame:hover .frame-backdrop { opacity:1; }
-        .img-cropped {
-            position:absolute; top:0; left:0;
-            width:100%; height:100%; object-fit:cover;
-            z-index:2; filter:brightness(0.55) grayscale(0.2); transition:filter 0.2s;
+        .film-frame img {
+            width:100%;
+            height:100%;
+            object-fit:cover;
+            display:block;
+            filter:brightness(0.95);
+            transition:filter 0.25s ease;
         }
-        .film-frame:hover .img-cropped { filter:brightness(0.85) grayscale(0); }
-        .vignette-mask {
-            position:absolute; inset:0;
-            background:radial-gradient(circle,transparent 40%,rgba(0,0,0,0.8) 100%);
-            z-index:3; pointer-events:none; transition:opacity 0.2s;
+        .film-frame.active img {
+            filter:brightness(1);
         }
-        .film-frame:hover .vignette-mask { opacity:0.15; }
-        .frame-metadata {
-            position:absolute; bottom:20px; left:20px; z-index:5; color:#fff;
-            opacity:0; transform:translateY(10px); transition:opacity 0.2s,transform 0.2s; pointer-events:none;
+        .frame-backdrop,
+        .vignette-mask,
+        .frame-metadata,
+        .meta-index,
+        .meta-title,
+        .carousel-stage,
+        .stage-image-wrap,
+        .stage-headline,
+        .stage-counter,
+        .stage-image,
+        .stage-arrow,
+        .carousel-thumbs {
+            display:none !important;
         }
-        .film-frame:hover .frame-metadata { opacity:1; transform:translateY(0); }
-        .meta-index { font-size:10px; font-weight:800; color:#6496ff; letter-spacing:2px; display:block; }
-        .meta-title  { font-size:15px; font-weight:700; text-transform:uppercase; }
-
+        .film-frame {
+            position:relative;
+            width:calc(12.5% - 12px);
+            min-width:120px;
+            aspect-ratio:4/3;
+            border-radius:20px;
+            overflow:hidden;
+            border:1px solid rgba(255,255,255,0.08);
+            background:#09090f;
+            cursor:pointer;
+            transition:transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+            box-shadow:0 12px 28px rgba(0,0,0,0.18);
+            flex:0 1 auto;
+        }
+        .film-frame:hover,
+        .film-frame.active {
+            transform:translateY(-4px);
+            border-color:rgba(100,150,255,0.35);
+            box-shadow:0 20px 40px rgba(0,0,0,0.28);
+        }
+        .film-frame.culled {
+            display:none;
+        }
+        .film-frame img {
+            width:100%;
+            height:100%;
+            object-fit:cover;
+            display:block;
+            filter:brightness(0.96);
+            transition:filter 0.25s ease;
+        }
+        .film-frame.active img {
+            filter:brightness(1);
+        }
+        .frame-backdrop,
+        .vignette-mask,
+        .frame-metadata,
+        .meta-index,
+        .meta-title {
+            display:none !important;
+        }
         .strip-arrow {
-            position:absolute; top:50%; transform:translateY(-50%);
-            width:50px; height:80px;
-            background:rgba(10,10,15,0.6); border:1px solid rgba(100,150,255,0.1); color:#fff;
-            display:flex; align-items:center; justify-content:center;
-            cursor:pointer; z-index:10; border-radius:8px; backdrop-filter:blur(5px);
-            transition:opacity 0.3s,background 0.3s; opacity:0.2;
+            position:static;
+            opacity:1;
+            width:auto;
+            height:auto;
+            background:transparent;
+            border:none;
+            box-shadow:none;
         }
-        .strip-arrow:hover { opacity:1; background:rgba(20,20,25,0.8); }
-        .strip-arrow-left  { left:20px; }
-        .strip-arrow-right { right:20px; }
-        .strip-arrow svg { width:24px; height:24px; fill:none; stroke:currentColor; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
+        .strip-arrow:hover {
+            background:none;
+            transform:none;
+        }
 
         /* ANALOGICO INTRO OVERLAY */
         .analogico-intro {
@@ -711,6 +861,7 @@
             transition:transform 0.1s ease-out;
             cursor:grab;
             transform-origin: center center;
+            touch-action: none;
         }
         .fs-img.grabbing { cursor:grabbing; }
         .fs-nav {
@@ -749,21 +900,66 @@
         /* ═══════════════════════════════════════
            RESPONSIVE
         ═══════════════════════════════════════ */
+        @media(max-width:1024px) {
+            #view-video .showcase-matrix,
+            #view-fotografia .showcase-matrix,
+            .menu-workspace {
+                justify-content:center;
+            }
+            #view-video .showcase-card,
+            #view-fotografia .showcase-card {
+                max-width:420px;
+            }
+            .video-item {
+                flex-direction:column;
+                align-items:center;
+                text-align:center;
+            }
+            .video-thumb {
+                width:100%;
+                height:220px;
+                flex:0 0 auto;
+            }
+            .video-meta h3 { font-size:2rem; }
+            .top-nav { right:16px; left:auto; bottom:auto; }
+        }
         @media(max-width:768px) {
-            .menu-workspace { padding-left:24px; padding-right:24px; align-items:center; gap:24px; }
-            .glass-capsule  { width:100%; max-width:440px; padding:24px 0; }
-            .glass-capsule h1 { font-size:36px; }
+            .menu-workspace { padding-left:20px; padding-right:20px; align-items:center; gap:20px; }
+            .glass-capsule  { width:100%; max-width:420px; padding:20px 0; }
+            .glass-capsule h1 { font-size:32px; }
             .film-frame { width:140px; }
             .strip-arrow { display:none; }
+            .video-item { padding:18px; gap:18px; }
+            .video-meta p { font-size:1rem; }
+            #top-nav {
+                top:auto;
+                bottom:14px;
+                left:50%;
+                right:auto;
+                transform:translateX(-50%);
+                padding:10px 14px;
+                width:min(92%, 700px);
+                justify-content:center;
+                flex-wrap:wrap;
+            }
         }
         @media(max-width:480px) {
-            .card { width:94%; padding:20px 16px; }
+            .card { width:96%; padding:18px 14px; }
             .buttons { flex-direction:column; align-items:center; }
             .btn { width:100%; justify-content:center; }
+            .video-meta h3 { font-size:1.7rem; }
+            .video-thumb { height:180px; }
+            .glass-capsule { padding:18px 0; }
+            .btn-analogico { padding:18px 32px; font-size:18px; letter-spacing:5px; }
         }
     </style>
 </head>
 <body>
+    <nav id="top-nav" aria-label="Primary navigation">
+        <button class="top-nav-link" data-target="landing"><span class="lang-en">Home</span><span class="lang-it">Inizio</span></button>
+        <button class="top-nav-link" data-target="video"><span class="lang-en">Video</span><span class="lang-it">Video</span></button>
+        <button class="top-nav-link" data-target="fotografia"><span class="lang-en">Photography</span><span class="lang-it">Fotografia</span></button>
+    </nav>
 
     <!-- ══════════════════════════════════════════
          VIEW 1 — LANDING
@@ -800,7 +996,7 @@
                 </div>
                 <div class="social-links">
                     <a href="https://www.instagram.com/adrian_rebek_" class="social-link" title="Instagram" target="_blank"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="https://sites.google.com/view/portfoliorebek/video" class="social-link" title="YouTube" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="#" id="social-youtube" class="social-link" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
                     <a href="https://wa.me/393517973717" class="social-link" title="WhatsApp" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
                     <a href="https://www.facebook.com/profile.php?id=61567288744494" class="social-link" title="Facebook" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
                 </div>
@@ -903,6 +1099,14 @@
                 </button>
             </div>
             <div class="showcase-card">
+                <button class="img-btn" data-target="video-corti" aria-label="Open Corti">
+                    <img src="https://i.ibb.co/kVF90frQ/Corti-Immagine.png" alt="Cortometraggi Live-Action Cinema Frame Production Set">
+                </button>
+                <button class="glass-capsule link-btn" data-target="video-corti" aria-label="Open Corti">
+                    <h1>Corti</h1>
+                </button>
+            </div>
+            <div class="showcase-card asl">
                 <button class="img-btn" data-target="video-asl" aria-label="Open ASL">
                     <img src="https://i.ibb.co/B5JXqhwT/alternanza-scuola-lavoro.jpg" alt="ASL video thumbnail">
                 </button>
@@ -910,20 +1114,12 @@
                     <h1>ASL</h1>
                 </button>
             </div>
-            <div class="showcase-card">
+            <div class="showcase-card ecc">
                 <button class="img-btn" data-target="video-ecc" aria-label="Open ECC">
                     <img src="https://i.ibb.co/k6StxD0p/Ecg-Cover.jpg" alt="ECC video thumbnail">
                 </button>
                 <button class="glass-capsule link-btn" data-target="video-ecc" aria-label="Open ECC">
                     <h1>ECC</h1>
-                </button>
-            </div>
-            <div class="showcase-card">
-                <button class="img-btn" data-target="video-corti" aria-label="Open Corti">
-                    <img src="https://i.ibb.co/kVF90frQ/Corti-Immagine.png" alt="Cortometraggi Live-Action Cinema Frame Production Set">
-                </button>
-                <button class="glass-capsule link-btn" data-target="video-corti" aria-label="Open Corti">
-                    <h1>Corti</h1>
                 </button>
             </div>
         </main>
@@ -1164,13 +1360,7 @@
         </div>
 
         <div class="strip-viewport" id="stripViewport" style="display:none;">
-            <div class="strip-track" id="stripTrack"></div>
-            <div class="strip-arrow strip-arrow-left" id="stripArrowLeft">
-                <svg viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
-            </div>
-            <div class="strip-arrow strip-arrow-right" id="stripArrowRight">
-                <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
-            </div>
+            <div class="gallery-grid" id="stripTrack"></div>
         </div>
 
         <button class="analogico-back" id="btn-analogico-back" style="display:none;" aria-label="Back">
@@ -1215,13 +1405,7 @@
         </div>
 
         <div class="strip-viewport" id="digitaleStripViewport" style="display:none;">
-            <div class="strip-track" id="digitaleStripTrack"></div>
-            <div class="strip-arrow strip-arrow-left" id="digitaleArrowLeft">
-                <svg viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
-            </div>
-            <div class="strip-arrow strip-arrow-right" id="digitaleArrowRight">
-                <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
-            </div>
+            <div class="gallery-grid" id="digitaleStripTrack"></div>
         </div>
 
         <button class="analogico-back" id="btn-digitale-back" style="display:none;" aria-label="Back">
@@ -1512,22 +1696,6 @@
         "https://i.ibb.co/7JNgw215/DSC1555-positive.jpg",
         "https://i.ibb.co/HpCH67JT/DSC1553-positive.jpg",
 
-        // IMAGES FOR DIGITALE
-        "https://i.imgur.com/7fJ2Lqv.jpeg",
-        "https://i.imgur.com/YBU3NkU.jpeg",
-        "https://i.imgur.com/aGAYON6.jpeg",
-        "https://i.imgur.com/NIjZZyY.jpeg",
-        "https://i.imgur.com/B2q1WIo.jpeg",
-        "https://i.imgur.com/768wrZV.jpeg",
-        "https://i.imgur.com/SCKWQk9.jpeg",
-        "https://i.imgur.com/ZH6Ebgg.jpeg",
-        "https://i.imgur.com/eBIdM0V.jpeg",
-        "https://i.imgur.com/3jkcZWu.jpeg",
-        "https://i.imgur.com/HnoVSmK.jpeg",
-        "https://i.imgur.com/ABs2Qvx.jpeg",
-        "https://i.imgur.com/F1aQvwN.jpeg",
-        "https://i.imgur.com/KG5Dopl.jpeg",
-        "https://i.imgur.com/7mJsbLb.jpeg"
     ];
 
     const DIGITALE_IMAGES = [
@@ -1545,7 +1713,28 @@
         "https://i.imgur.com/ABs2Qvx.jpeg",
         "https://i.imgur.com/F1aQvwN.jpeg",
         "https://i.imgur.com/KG5Dopl.jpeg",
-        "https://i.imgur.com/7mJsbLb.jpeg"
+        "https://i.imgur.com/7mJsbLb.jpeg",
+        "https://i.ibb.co/6Jbccd02/DSC1474.jpg",
+        "https://i.ibb.co/QFcVF5qn/DSC1475.jpg",
+        "https://i.ibb.co/p6HMd6Qg/DSC1476.jpg",
+        "https://i.ibb.co/S4BqPFgj/DSC1513.jpg",
+        "https://i.ibb.co/Z6NKMGM5/DSC0585.jpg",
+        "https://i.ibb.co/v4dQYY4K/DSC0586.jpg",
+        "https://i.ibb.co/LDDvHJH2/DSC0588.jpg",
+        "https://i.ibb.co/Rk6SqQBX/DSC0590.jpg",
+        "https://i.ibb.co/d0fWS2jp/DSC0591.jpg",
+        "https://i.ibb.co/0VMY7wDt/DSC0592.jpg",
+        "https://i.ibb.co/5XZFFJm2/DSC0610-NIK.jpg",
+        "https://i.ibb.co/2077t6yJ/DSC0611-NIK.jpg",
+        "https://i.ibb.co/wFspcXbT/DSC0614.jpg",
+        "https://i.ibb.co/RGm3Sjhb/DSC0615-Edit.jpg",
+        "https://i.ibb.co/cKNBRD7t/DSC0617-Pano-Edit-Edit.jpg",
+        "https://i.ibb.co/GQDkK4rV/DSC0621-Edit.jpg",
+        "https://i.ibb.co/qYZLftgd/DSC0633-Pano.jpg",
+        "https://i.ibb.co/F4Pr5hfV/DSC0648-Edit.jpg",
+        "https://i.ibb.co/k6rxP8tD/DSC0652.jpg",
+        "https://i.ibb.co/JWDNzTyY/DSC0655-Pano-Edit.jpg",
+        "https://i.ibb.co/jZQymgrY/DSC0657-Edit.jpg"
     ];
     
     function scrollToView(viewId) {
@@ -1596,7 +1785,21 @@ document.getElementById('btn-go-menu').addEventListener('click', () => scrollToV
         digitale:  document.getElementById('view-digitale')
     };
 
+    const videoIframes = Array.from(document.querySelectorAll('iframe')).map(iframe => {
+        iframe.dataset.src = iframe.dataset.src || iframe.src;
+        return iframe;
+    });
+
     function showView(name) {
+        videoIframes.forEach(iframe => {
+            const parentView = iframe.closest('.view');
+            if (parentView && parentView.id === name) {
+                iframe.src = iframe.dataset.src;
+            } else {
+                iframe.src = '';
+            }
+        });
+
         Object.entries(views).forEach(([k, el]) => {
             el.classList.toggle('active', k === name);
             el.classList.toggle('hidden', k !== name);
@@ -1612,6 +1815,13 @@ document.getElementById('btn-go-menu').addEventListener('click', () => scrollToV
     document.getElementById('btn-video-back').addEventListener('click', () => showView('menu'));
     document.getElementById('btn-analogico-back').addEventListener('click', () => showView('fotografia'));
     document.getElementById('btn-digitale-back').addEventListener('click', () => showView('fotografia'));
+    const youtubeLink = document.getElementById('social-youtube');
+    if (youtubeLink) {
+        youtubeLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showView('video');
+        });
+    }
 
     // Delegate clicks on image buttons inside #view-video to open respective video pages
     document.querySelectorAll('#view-video .img-btn').forEach(btn => {
@@ -1632,6 +1842,25 @@ document.getElementById('btn-go-menu').addEventListener('click', () => scrollToV
     document.querySelectorAll('.play-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const target = btn.dataset.target;
+            if (target) showView(target);
+        });
+    });
+    // Make video thumbnails clickable in video lists too
+    document.querySelectorAll('.video-thumb').forEach(thumb => {
+        thumb.style.cursor = 'pointer';
+        thumb.addEventListener('click', () => {
+            const wrapper = thumb.closest('.video-item');
+            const playBtn = wrapper && wrapper.querySelector('.play-btn');
+            if (playBtn) {
+                const target = playBtn.dataset.target;
+                if (target) showView(target);
+            }
+        });
+    });
+
+    document.querySelectorAll('.top-nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            const target = link.dataset.target;
             if (target) showView(target);
         });
     });
@@ -1776,211 +2005,135 @@ document.getElementById('btn-go-menu').addEventListener('click', () => scrollToV
         setLang(html.classList.contains('lang-it') ? 'en' : 'it');
     });
     const saved = localStorage.getItem('lang');
-    if (saved === 'it') setLang('it');
+    if (saved === 'it' || saved === 'en') setLang(saved);
 
     /* ─────────────────────────────────────────
        VIEW 3 — ANALOGICO FILM STRIP
     ───────────────────────────────────────── */
-    const filmImages   = shuffle([...ALL_IMAGES]);
-    const totalFrames  = filmImages.length;
-    const frameWidth   = 200;
-    const trackWidth   = totalFrames * frameWidth;
-
-    let currentOffset = 0, targetOffset = 0;
-    let hoveredIndex  = -1;
+    const filmImages = shuffle([...ALL_IMAGES]);
+    const totalFrames = filmImages.length;
+    let analogicoIndex = 0;
+    let digitaleIndex = 0;
+    let analogicoBuilt = false;
+    let digitaleBuilt = false;
     let fsActive = false, fsIndex = 0;
     let zoom = 1, panX = 0, panY = 0;
-    let dragging = false, dragX = 0, dragY = 0, dragX0 = 0, dragY0 = 0;
-    let stripReady = false;
+    let dragging = false, dragX0 = 0, dragY0 = 0;
 
-    const stripViewport  = document.getElementById('stripViewport');
-    const stripTrack     = document.getElementById('stripTrack');
+    const stripViewport = document.getElementById('stripViewport');
+    const stripTrack = document.getElementById('stripTrack');
     const analogicoIntro = document.getElementById('analogicoIntro');
-    const analogicoLoad  = document.getElementById('analogicoLoading');
+    const analogicoLoad = document.getElementById('analogicoLoading');
     const digitaleFilmImages = shuffle([...DIGITALE_IMAGES]);
     const digitaleTotalFrames = digitaleFilmImages.length;
-    const digitaleTrackWidth = digitaleTotalFrames * frameWidth;
-
-    let digitaleCurrentOffset = 0, digitaleTargetOffset = 0;
-    let digitaleStripReady = false;
-
     const digitaleStripViewport = document.getElementById('digitaleStripViewport');
-    const digitaleStripTrack    = document.getElementById('digitaleStripTrack');
-    const digitaleIntro         = document.getElementById('digitaleIntro');
-    const digitaleLoad          = document.getElementById('digitaleLoading');
-    const fsContainer           = document.getElementById('fsContainer');
-    const fsImg                 = document.getElementById('fsImg');
-    const fsBackdrop            = document.getElementById('fsBackdrop');
-    const fsLeft                = document.getElementById('fsLeft');
-    const fsRight               = document.getElementById('fsRight');
-    const fsClose               = document.getElementById('fsClose');
+    const digitaleStripTrack = document.getElementById('digitaleStripTrack');
+    const digitaleIntro = document.getElementById('digitaleIntro');
+    const digitaleLoad = document.getElementById('digitaleLoading');
+    const fsContainer = document.getElementById('fsContainer');
+    const fsImg = document.getElementById('fsImg');
+    const fsBackdrop = document.getElementById('fsBackdrop');
+    const fsLeft = document.getElementById('fsLeft');
+    const fsRight = document.getElementById('fsRight');
+    const fsClose = document.getElementById('fsClose');
 
-    stripTrack.style.width = trackWidth + 'px';
-    digitaleStripTrack.style.width = digitaleTrackWidth + 'px';
+    // Build a collage-style gallery inside a grid container
+    function buildGalleryCollage(container, images) {
+        container.innerHTML = '';
+        const vw = container.clientWidth || window.innerWidth;
+        const cols = Math.max(3, Math.min(12, Math.floor(vw / 200)));
+        const cell = Math.floor(vw / cols);
+        const rows = Math.ceil((images.length * 0.6) / cols) + 4;
+        container.style.gridTemplateColumns = `repeat(${cols}, ${cell}px)`;
+        container.style.gridAutoRows = `${cell}px`;
+        container.style.gridAutoFlow = 'dense';
 
-    function normalizeOffset(offset, width) {
-        const mod = offset % width;
-        return mod > 0 ? mod - width : mod;
-    }
+        // Prepare pool with original indices
+        let pool = images.map((s, i) => ({src: s, idx: i}));
+        pool = shuffle(pool);
 
-    function getCenteredOffset() {
-        const mid = Math.floor(totalFrames / 2);
-        return normalizeOffset(-(mid * frameWidth) + (window.innerWidth / 2) - (frameWidth / 2), trackWidth);
-    }
-
-    function getDigitaleCenteredOffset() {
-        const mid = Math.floor(digitaleTotalFrames / 2);
-        return normalizeOffset(-(mid * frameWidth) + (window.innerWidth / 2) - (frameWidth / 2), digitaleTrackWidth);
-    }
-
-    function renderStrip() {
-        const buf = 10 * frameWidth;
-        const vl  = -currentOffset - buf;
-        const vr  = -currentOffset + window.innerWidth + buf;
-        const s   = Math.floor(vl / frameWidth);
-        const e   = Math.ceil(vr / frameWidth);
-
-        stripTrack.querySelectorAll('.film-frame').forEach(f => {
-            const idx = parseInt(f.dataset.index);
-            if (idx < s || idx > e) f.remove();
-        });
-
-        for (let i = s; i <= e; i++) {
-            if (!stripTrack.querySelector(`[data-index="${i}"]`)) {
-                const f = document.createElement('div');
-                f.className = 'film-frame';
-                f.dataset.index = i;
-                f.style.left = (i * frameWidth) + 'px';
-                const imageIndex = ((i % totalFrames) + totalFrames) % totalFrames;
-                f.innerHTML = `
-                    <div class="vignette-mask"></div>
-                    <div class="frame-metadata">
-                        <span class="meta-index">SHOT ${String(i+1).padStart(2,'0')}</span>
-                        <span class="meta-title">ANALOGICO</span>
-                    </div>
-                    <img src="${filmImages[imageIndex]}" class="frame-backdrop" loading="lazy">
-                    <img src="${filmImages[imageIndex]}" class="img-cropped" loading="lazy">
-                `;
-                f.addEventListener('click', () => openFullscreen(imageIndex));
-                stripTrack.appendChild(f);
-            }
+        // simple greedy placement using explicit grid placement
+        const placed = 0;
+        let i = 0;
+        while (i < pool.length) {
+            const item = pool[i];
+            const cs = Math.min(3, Math.floor(Math.random() * 3) + 1);
+            const rs = Math.min(3, Math.floor(Math.random() * 3) + 1);
+            const tile = document.createElement('div');
+            tile.className = 'gallery-tile';
+            tile.dataset.index = item.idx;
+            // set a span via style — we rely on CSS grid auto-placement 'dense'
+            tile.style.gridColumn = `span ${cs}`;
+            tile.style.gridRow = `span ${rs}`;
+            const img = document.createElement('img');
+            img.src = item.src; img.loading = 'lazy'; img.decoding = 'async'; img.alt = '';
+            img.addEventListener('click', (e) => { e.stopPropagation(); if (typeof openFullscreen === 'function') openFullscreen(item.idx); });
+            tile.appendChild(img);
+            container.appendChild(tile);
+            i++;
         }
     }
 
-    function renderDigitalStrip() {
-        const buf = 10 * frameWidth;
-        const vl  = -digitaleCurrentOffset - buf;
-        const vr  = -digitaleCurrentOffset + window.innerWidth + buf;
-        const s   = Math.floor(vl / frameWidth);
-        const e   = Math.ceil(vr / frameWidth);
-
-        digitaleStripTrack.querySelectorAll('.film-frame').forEach(f => {
-            const idx = parseInt(f.dataset.index);
-            if (idx < s || idx > e) f.remove();
-        });
-
-        for (let i = s; i <= e; i++) {
-            if (!digitaleStripTrack.querySelector(`[data-index="${i}"]`)) {
-                const f = document.createElement('div');
-                f.className = 'film-frame';
-                f.dataset.index = i;
-                f.style.left = (i * frameWidth) + 'px';
-                const imageIndex = ((i % digitaleTotalFrames) + digitaleTotalFrames) % digitaleTotalFrames;
-                f.innerHTML = `
-                    <div class="vignette-mask"></div>
-                    <div class="frame-metadata">
-                        <span class="meta-index">SHOT ${String(i+1).padStart(2,'0')}</span>
-                        <span class="meta-title">DIGITALE</span>
-                    </div>
-                    <img src="${digitaleFilmImages[imageIndex]}" class="frame-backdrop" loading="lazy">
-                    <img src="${digitaleFilmImages[imageIndex]}" class="img-cropped" loading="lazy">
-                `;
-                f.addEventListener('click', () => openFullscreen(imageIndex));
-                digitaleStripTrack.appendChild(f);
-            }
+    function ensureAnalogicoCarousel() {
+        if (!analogicoBuilt) {
+            buildGalleryCollage(stripTrack, filmImages);
+            analogicoBuilt = true;
         }
     }
 
-    // Smooth animation loop — uses lerp with a very low factor for buttery feel
-    let rafId = null;
-    function animLoop() {
-        const diff = targetOffset - currentOffset;
-        currentOffset += diff * 0.07;           // lower = smoother/slower lerp
-        if (Math.abs(diff) < 0.05) currentOffset = targetOffset;
-        currentOffset = normalizeOffset(currentOffset, trackWidth);
-        stripTrack.style.transform = `translateX(${currentOffset}px)`;
-        renderStrip();
-        rafId = requestAnimationFrame(animLoop);
+    function ensureDigitaleCarousel() {
+        if (!digitaleBuilt) {
+            buildGalleryCollage(digitaleStripTrack, digitaleFilmImages);
+            digitaleBuilt = true;
+        }
     }
 
-    // Edge scroll on mousemove — acceleration curve
-    stripViewport.addEventListener('mousemove', e => {
-        if (fsActive) return;
-        const x = e.clientX, vw = window.innerWidth, zone = 200;
-        if (x < zone) {
-            const t = 1 - x / zone;
-            targetOffset += t*t * 18;
-        } else if (x > vw - zone) {
-            const t = 1 - (vw - x) / zone;
-            targetOffset -= t*t * 18;
-        }
-    });
+    function moveAnalogico(delta) {
+        analogicoIndex = (analogicoIndex + delta + totalFrames) % totalFrames;
+        ensureAnalogicoCarousel();
+    }
 
-    digitaleStripViewport.addEventListener('mousemove', e => {
-        if (fsActive) return;
-        const x = e.clientX, vw = window.innerWidth, zone = 200;
-        if (x < zone) {
-            const t = 1 - x / zone;
-            digitaleTargetOffset += t*t * 18;
-        } else if (x > vw - zone) {
-            const t = 1 - (vw - x) / zone;
-            digitaleTargetOffset -= t*t * 18;
-        }
-    });
+    function moveDigitale(delta) {
+        digitaleIndex = (digitaleIndex + delta + digitaleTotalFrames) % digitaleTotalFrames;
+        ensureDigitaleCarousel();
+    }
+
+    const stripArrowLeft = document.getElementById('stripArrowLeft');
+    const stripArrowRight = document.getElementById('stripArrowRight');
+    const digitaleArrowLeft = document.getElementById('digitaleArrowLeft');
+    const digitaleArrowRight = document.getElementById('digitaleArrowRight');
+    if (stripArrowLeft) stripArrowLeft.addEventListener('click', () => moveAnalogico(-1));
+    if (stripArrowRight) stripArrowRight.addEventListener('click', () => moveAnalogico(1));
+    if (digitaleArrowLeft) digitaleArrowLeft.addEventListener('click', () => moveDigitale(-1));
+    if (digitaleArrowRight) digitaleArrowRight.addEventListener('click', () => moveDigitale(1));
 
     document.addEventListener('keydown', e => {
         if (views.analogico.classList.contains('hidden') && views.digitale.classList.contains('hidden')) return;
         if (fsActive) {
-            if (e.key === 'ArrowLeft')  navigateFs(-1);
+            if (e.key === 'ArrowLeft') navigateFs(-1);
             if (e.key === 'ArrowRight') navigateFs(1);
-            if (e.key === 'Escape')     closeFullscreen();
+            if (e.key === 'Escape') closeFullscreen();
             return;
         }
         if (!views.digitale.classList.contains('hidden')) {
-            if (e.key === 'ArrowLeft')  digitaleTargetOffset += 600;
-            if (e.key === 'ArrowRight') digitaleTargetOffset -= 600;
+            if (e.key === 'ArrowLeft') moveDigitale(-1);
+            if (e.key === 'ArrowRight') moveDigitale(1);
             return;
         }
-        if (e.key === 'ArrowLeft')  targetOffset += 600;
-        if (e.key === 'ArrowRight') targetOffset -= 600;
-        targetOffset = normalizeOffset(targetOffset, trackWidth);
+        if (!views.analogico.classList.contains('hidden')) {
+            if (e.key === 'ArrowLeft') moveAnalogico(-1);
+            if (e.key === 'ArrowRight') moveAnalogico(1);
+        }
     });
-
-    document.getElementById('stripArrowLeft').addEventListener('click',  () => { targetOffset += 800; });
-    document.getElementById('stripArrowRight').addEventListener('click', () => { targetOffset -= 800; });
-    document.getElementById('digitaleArrowLeft').addEventListener('click', () => { digitaleTargetOffset += 800; });
-    document.getElementById('digitaleArrowRight').addEventListener('click', () => { digitaleTargetOffset -= 800; });
 
     document.getElementById('enterAnalogico').addEventListener('click', () => {
         analogicoIntro.classList.add('hidden');
         analogicoLoad.classList.add('active');
         stripViewport.style.display = 'block';
         document.getElementById('btn-analogico-back').style.display = 'flex';
-
-        const c = getCenteredOffset();
-        currentOffset = targetOffset = c;
-        stripTrack.style.transform = `translateX(${c}px)`;
-        renderStrip();
-
-        // Wait for initial visible images, timeout at 5s
-        let loaded = 0;
-        const imgs = stripTrack.querySelectorAll('img');
-        const total = imgs.length || 1;
-        const done = () => { if (++loaded >= total) { analogicoLoad.classList.remove('active'); if (!stripReady) { stripReady = true; animLoop(); } } };
-        imgs.forEach(img => img.complete ? done() : (img.onload = img.onerror = done));
-        setTimeout(() => { analogicoLoad.classList.remove('active'); if (!stripReady) { stripReady = true; animLoop(); } }, 500);
-
-        if (!stripReady) { stripReady = true; animLoop(); }
+        analogicoIndex = 0;
+        ensureAnalogicoCarousel();
+        analogicoLoad.classList.remove('active');
     });
 
     document.getElementById('enterDigitale').addEventListener('click', () => {
@@ -1988,31 +2141,10 @@ document.getElementById('btn-go-menu').addEventListener('click', () => scrollToV
         digitaleLoad.classList.add('active');
         digitaleStripViewport.style.display = 'block';
         document.getElementById('btn-digitale-back').style.display = 'flex';
-
-        const c = getDigitaleCenteredOffset();
-        digitaleCurrentOffset = digitaleTargetOffset = c;
-        digitaleStripTrack.style.transform = `translateX(${c}px)`;
-        renderDigitalStrip();
-
-        let loaded = 0;
-        const imgs = digitaleStripTrack.querySelectorAll('img');
-        const total = imgs.length || 1;
-        const done = () => { if (++loaded >= total) { digitaleLoad.classList.remove('active'); if (!digitaleStripReady) { digitaleStripReady = true; animLoopDigital(); } } };
-        imgs.forEach(img => img.complete ? done() : (img.onload = img.onerror = done));
-        setTimeout(() => { digitaleLoad.classList.remove('active'); if (!digitaleStripReady) { digitaleStripReady = true; animLoopDigital(); } }, 500);
-
-        if (!digitaleStripReady) { digitaleStripReady = true; animLoopDigital(); }
+        digitaleIndex = 0;
+        ensureDigitaleCarousel();
+        digitaleLoad.classList.remove('active');
     });
-
-    function animLoopDigital() {
-        const diff = digitaleTargetOffset - digitaleCurrentOffset;
-        digitaleCurrentOffset += diff * 0.07;
-        if (Math.abs(diff) < 0.05) digitaleCurrentOffset = digitaleTargetOffset;
-        digitaleCurrentOffset = normalizeOffset(digitaleCurrentOffset, digitaleTrackWidth);
-        digitaleStripTrack.style.transform = `translateX(${digitaleCurrentOffset}px)`;
-        renderDigitalStrip();
-        requestAnimationFrame(animLoopDigital);
-    }
 
     /* FULLSCREEN */
     function openFullscreen(i) {
@@ -2053,6 +2185,30 @@ document.getElementById('btn-go-menu').addEventListener('click', () => scrollToV
         applyFsTransform();
     }, {passive: false});
     fsImg.addEventListener('dragstart', e => e.preventDefault());
+
+    function getTouchDistance(e) {
+        const [a, b] = e.touches;
+        const dx = a.clientX - b.clientX;
+        const dy = a.clientY - b.clientY;
+        return Math.hypot(dx, dy);
+    }
+
+    function getTouchCenter(e) {
+        const [a, b] = e.touches;
+        return {
+            x: (a.clientX + b.clientX) / 2,
+            y: (a.clientY + b.clientY) / 2
+        };
+    }
+
+    let touchZoomStart = 1;
+    let touchDistanceStart = 0;
+    let touchPanStartX = 0;
+    let touchPanStartY = 0;
+    let touchDragStartX = 0;
+    let touchDragStartY = 0;
+    let lastTapTime = 0;
+
     fsImg.addEventListener('mousedown', e => {
         if (zoom <= 1) return;
         e.preventDefault();
@@ -2065,6 +2221,59 @@ document.getElementById('btn-go-menu').addEventListener('click', () => scrollToV
         applyFsTransform();
     });
     document.addEventListener('mouseup', () => { dragging = false; fsImg.classList.remove('grabbing'); });
+
+    fsImg.addEventListener('touchstart', e => {
+        if (e.touches.length === 2) {
+            e.preventDefault();
+            touchDistanceStart = getTouchDistance(e);
+            touchZoomStart = zoom;
+            const center = getTouchCenter(e);
+            touchPanStartX = center.x;
+            touchPanStartY = center.y;
+        } else if (e.touches.length === 1 && zoom > 1) {
+            e.preventDefault();
+            touchDragStartX = e.touches[0].clientX - panX;
+            touchDragStartY = e.touches[0].clientY - panY;
+            dragging = true;
+            fsImg.classList.add('grabbing');
+        }
+    }, {passive: false});
+
+    fsImg.addEventListener('touchmove', e => {
+        if (e.touches.length === 2) {
+            e.preventDefault();
+            const distance = getTouchDistance(e);
+            zoom = Math.min(7, Math.max(1, touchZoomStart * (distance / touchDistanceStart)));
+            applyFsTransform();
+        } else if (e.touches.length === 1 && dragging && zoom > 1) {
+            e.preventDefault();
+            panX = e.touches[0].clientX - touchDragStartX;
+            panY = e.touches[0].clientY - touchDragStartY;
+            applyFsTransform();
+        }
+    }, {passive: false});
+
+    fsImg.addEventListener('touchend', e => {
+        if (e.touches.length === 0) {
+            dragging = false;
+            fsImg.classList.remove('grabbing');
+            const now = Date.now();
+            if (now - lastTapTime < 300) {
+                if (zoom === 1) {
+                    zoom = 2;
+                } else {
+                    zoom = 1;
+                    panX = 0;
+                    panY = 0;
+                }
+                applyFsTransform();
+                lastTapTime = 0;
+            } else {
+                lastTapTime = now;
+            }
+        }
+    });
+
     fsImg.addEventListener('click', e => { if (zoom <= 1) closeFullscreen(); });
     fsImg.addEventListener('dblclick', () => { zoom = 1; panX = 0; panY = 0; applyFsTransform(); });
 
